@@ -2,6 +2,7 @@ package com.ccnu.knowpost.api;
 
 import com.ccnu.auth.token.JwtService;
 import com.ccnu.knowpost.api.dto.*;
+import com.ccnu.knowpost.service.KnowPostFeedService;
 import com.ccnu.knowpost.service.KnowPostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +15,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * 知文 API 控制器。
  *
- * <p>提供草稿 → 上传 → 发布 完整流程，以及详情查询。
- * Feed 端点见 {@code KnowPostFeedController}（Commit 10）。</p>
+ * <p>草稿 → 上传 → 发布 完整流程，详情 + Feed 流。</p>
  */
 @RestController
 @RequestMapping("/api/v1/knowposts")
@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class KnowPostController {
 
     private final KnowPostService service;
+    private final KnowPostFeedService feedService;
     private final JwtService jwtService;
 
     /** 创建草稿。 */
@@ -89,5 +90,21 @@ public class KnowPostController {
     public KnowPostDetailResponse detail(@PathVariable long id, @AuthenticationPrincipal Jwt jwt) {
         Long uid = (jwt == null) ? null : jwtService.extractUserId(jwt);
         return service.getDetail(id, uid);
+    }
+
+    /** 公开 Feed（分页）。 */
+    @GetMapping("/feed")
+    public FeedPageResponse feed(@RequestParam(defaultValue = "1") int page,
+                                 @RequestParam(defaultValue = "20") int size,
+                                 @AuthenticationPrincipal Jwt jwt) {
+        return feedService.getPublicFeed(page, size, jwt != null ? jwtService.extractUserId(jwt) : null);
+    }
+
+    /** 我的发布（分页）。 */
+    @GetMapping("/mine")
+    public FeedPageResponse mine(@RequestParam(defaultValue = "1") int page,
+                                 @RequestParam(defaultValue = "20") int size,
+                                 @AuthenticationPrincipal Jwt jwt) {
+        return feedService.getMyPublished(jwtService.extractUserId(jwt), page, size);
     }
 }
