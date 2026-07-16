@@ -3,6 +3,61 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ccnu.relation.mapper.RelationMapper">
 
+    <insert id="insertFollowing">
+        INSERT INTO following (id, from_user_id, to_user_id, rel_status, created_at, updated_at)
+        VALUES (#{id}, #{fromUserId}, #{toUserId}, #{relStatus}, NOW(3), NOW(3))
+    </insert>
+
+    <update id="cancelFollowing">
+        UPDATE following SET rel_status = 0, updated_at = NOW(3)
+        WHERE from_user_id = #{fromUserId} AND to_user_id = #{toUserId} AND rel_status = 1
+    </update>
+
+    <insert id="insertFollower">
+        INSERT INTO follower (id, to_user_id, from_user_id, rel_status, created_at, updated_at)
+        VALUES (#{id}, #{toUserId}, #{fromUserId}, #{relStatus}, NOW(3), NOW(3))
+    </insert>
+
+    <update id="cancelFollower">
+        UPDATE follower SET rel_status = 0, updated_at = NOW(3)
+        WHERE to_user_id = #{toUserId} AND from_user_id = #{fromUserId} AND rel_status = 1
+    </update>
+
+    <select id="existsFollowing" resultType="int">
+        SELECT COUNT(1) FROM following
+        WHERE from_user_id = #{fromUserId} AND to_user_id = #{toUserId} AND rel_status = 1
+    </select>
+
+    <select id="listFollowing" resultType="long">
+        SELECT to_user_id FROM following
+        WHERE from_user_id = #{fromUserId} AND rel_status = 1
+        ORDER BY created_at DESC LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="listFollowers" resultType="long">
+        SELECT from_user_id FROM follower
+        WHERE to_user_id = #{toUserId} AND rel_status = 1
+        ORDER BY created_at DESC LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <resultMap id="rowMap" type="java.util.HashMap">
+        <result property="toUserId" column="to_user_id"/>
+        <result property="fromUserId" column="from_user_id"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <select id="listFollowingRows" resultType="java.util.HashMap">
+        SELECT to_user_id AS toUserId, created_at AS createdAt FROM following
+        WHERE from_user_id = #{fromUserId} AND rel_status = 1
+        ORDER BY created_at DESC LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="listFollowerRows" resultType="java.util.HashMap">
+        SELECT from_user_id AS fromUserId, created_at AS createdAt FROM follower
+        WHERE to_user_id = #{toUserId} AND rel_status = 1
+        ORDER BY created_at DESC LIMIT #{limit} OFFSET #{offset}
+    </select>
+
     <select id="countFollowingActive" resultType="int">
         SELECT COUNT(1) FROM following WHERE from_user_id = #{fromUserId} AND rel_status = 1
     </select>

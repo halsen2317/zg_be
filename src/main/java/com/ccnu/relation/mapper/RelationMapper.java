@@ -2,12 +2,40 @@ package com.ccnu.relation.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.MapKey;
 
-/**
- * 关系数据访问层（stub，Commit 9 完整实现）。
- */
+import java.util.List;
+import java.util.Map;
+
 @Mapper
 public interface RelationMapper {
+
+    int insertFollowing(@Param("id") Long id, @Param("fromUserId") Long fromUserId,
+                        @Param("toUserId") Long toUserId, @Param("relStatus") Integer relStatus);
+
+    int cancelFollowing(@Param("fromUserId") Long fromUserId, @Param("toUserId") Long toUserId);
+
+    int insertFollower(@Param("id") Long id, @Param("toUserId") Long toUserId,
+                       @Param("fromUserId") Long fromUserId, @Param("relStatus") Integer relStatus);
+
+    int cancelFollower(@Param("toUserId") Long toUserId, @Param("fromUserId") Long fromUserId);
+
+    int existsFollowing(@Param("fromUserId") Long fromUserId, @Param("toUserId") Long toUserId);
+
+    List<Long> listFollowing(@Param("fromUserId") Long fromUserId,
+                             @Param("limit") int limit, @Param("offset") int offset);
+
+    List<Long> listFollowers(@Param("toUserId") Long toUserId,
+                             @Param("limit") int limit, @Param("offset") int offset);
+
+    @MapKey("toUserId")
+    Map<Long, Map<String, Object>> listFollowingRows(@Param("fromUserId") Long fromUserId,
+                                                      @Param("limit") int limit, @Param("offset") int offset);
+
+    @MapKey("fromUserId")
+    Map<Long, Map<String, Object>> listFollowerRows(@Param("toUserId") Long toUserId,
+                                                     @Param("limit") int limit, @Param("offset") int offset);
+
     int countFollowingActive(@Param("fromUserId") Long fromUserId);
     int countFollowerActive(@Param("toUserId") Long toUserId);
 }
