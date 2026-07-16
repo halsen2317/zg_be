@@ -140,4 +140,8 @@
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
+    <select id="listMyPublishedIds" resultType="long">
+        SELECT id FROM know_posts WHERE creator_id = #{userId} AND status = 'published'
+    </select>
+
 </mapper>

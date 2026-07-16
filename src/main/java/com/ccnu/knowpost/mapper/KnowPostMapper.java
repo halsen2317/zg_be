@@ -37,4 +37,7 @@ public interface KnowPostMapper {
 
     /** 我的发布列表。 */
     List<KnowPostFeedRow> listMyPublished(@Param("userId") long userId, @Param("limit") int limit, @Param("offset") int offset);
+
+    /** 用户已发布文章 ID 列表（供计数重建）。 */
+    List<Long> listMyPublishedIds(@Param("userId") long userId);
 }
