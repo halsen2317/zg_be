@@ -56,4 +56,22 @@
         </foreach>
     </select>
 
+    <update id="updateProfile">
+        UPDATE users SET updated_at = NOW()
+        <if test="nickname != null">, nickname = #{nickname}</if>
+        <if test="avatar != null">, avatar = #{avatar}</if>
+        <if test="bio != null">, bio = #{bio}</if>
+        <if test="zgId != null">, zg_id = #{zgId}</if>
+        <if test="gender != null">, gender = #{gender}</if>
+        <if test="birthday != null">, birthday = #{birthday}</if>
+        <if test="school != null">, school = #{school}</if>
+        <if test="tagsJson != null">, tags_json = #{tagsJson}</if>
+        WHERE id = #{id}
+    </update>
+
+    <select id="existsByZgIdExceptId" resultType="boolean">
+        SELECT COUNT(1) > 0 FROM users WHERE zg_id = #{zgId}
+        <if test="excludeId != null"> AND id != #{excludeId}</if>
+    </select>
+
 </mapper>

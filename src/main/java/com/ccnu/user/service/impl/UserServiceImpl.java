@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<User> findById(Long id) {
-        return userMapper.findById(id);
+        return Optional.ofNullable(userMapper.findById(id));
     }
 
     @Override

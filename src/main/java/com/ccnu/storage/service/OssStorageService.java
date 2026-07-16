@@ -4,12 +4,16 @@ import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
+import com.aliyun.oss.model.PutObjectRequest;
 import com.ccnu.common.exception.BusinessException;
 import com.ccnu.common.exception.ErrorCode;
 import com.ccnu.storage.config.OssProperties;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.net.URL;
+import java.time.Instant;
 import java.util.Date;
 
 /**
@@ -58,5 +62,25 @@ public class OssStorageService {
                 || props.getAccessKeySecret() == null || props.getBucket() == null) {
             throw new BusinessException(ErrorCode.INTERNAL_ERROR, "对象存储未配置");
         }
+    }
+
+    /** 上传头像文件到 OSS，返回公开 URL。 */
+    public String uploadAvatar(long userId, MultipartFile file) {
+        ensureConfigured();
+        String original = file.getOriginalFilename();
+        String ext = "";
+        if (original != null && original.contains(".")) ext = original.substring(original.lastIndexOf('.'));
+        String objectKey = props.getFolder() + "/avatars/" + userId + "-" + Instant.now().toEpochMilli() + ext;
+        OSS client = new OSSClientBuilder().build(props.getEndpoint(), props.getAccessKeyId(), props.getAccessKeySecret());
+        try {
+            client.putObject(new PutObjectRequest(props.getBucket(), objectKey, file.getInputStream()));
+        } catch (IOException e) {
+            throw new BusinessException(ErrorCode.BAD_REQUEST, "头像文件读取失败");
+        } finally {
+            client.shutdown();
+        }
+        String domain = props.getPublicDomain();
+        if (domain != null && !domain.isBlank()) return domain.replaceAll("/$", "") + "/" + objectKey;
+        return "https://" + props.getBucket() + "." + props.getEndpoint() + "/" + objectKey;
     }
 }

@@ -13,6 +13,7 @@ public enum ErrorCode {
 
     // ──────────── 用户 / 认证 ────────────
     IDENTIFIER_EXISTS("IDENTIFIER_EXISTS", "账号已存在"),
+    ZGID_EXISTS("ZGID_EXISTS", "知光号已被占用"),
     IDENTIFIER_NOT_FOUND("IDENTIFIER_NOT_FOUND", "账号不存在"),
     INVALID_CREDENTIALS("INVALID_CREDENTIALS", "登录凭证错误"),
     PASSWORD_POLICY_VIOLATION("PASSWORD_POLICY_VIOLATION", "密码强度不足"),
