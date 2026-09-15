@@ -4,19 +4,6 @@
 
 ---
 
-## 项目展示
-
-<div style="display: flex; gap: 10px;">
-  <img src="https://free.picui.cn/free/2026/03/29/69c8db2c32d74.png" width="800" />
-  <img src="https://free.picui.cn/free/2026/03/29/69c8db2ead009.png" width="800" />
-  <img src="https://free.picui.cn/free/2026/03/29/69c8db2b93e32.png" width="800" />
-  <img src="https://free.picui.cn/free/2026/03/29/69c8db2b89818.png" width="800" />
-  <img src="https://free.picui.cn/free/2026/03/29/69c8db2bd181e.png" width="800" />
-  <img src="https://free.picui.cn/free/2026/03/29/69c8db2c30a4b.png" width="800" />
-</div>
-
----
-
 ## 技术栈
 
 | 层级 | 技术 |
@@ -28,7 +15,6 @@
 | 搜索引擎 | Elasticsearch（全文检索 + 前缀联想） |
 | AI | Spring AI + DeepSeek（摘要生成 + RAG 问答） |
 | 对象存储 | 阿里云 OSS（预签名 URL 前端直传） |
-| 前端 | React 18 + TypeScript + Vite |
 
 ---
 
@@ -83,13 +69,6 @@ mysql -u root -p zhiguang < db/schema.sql
 mvn spring-boot:run
 ```
 
-### 5. 启动前端
-```bash
-cd zhiguang_fe
-npm install && npm run dev
-```
-前端运行在 `http://localhost:5173`
-
 ---
 
 ## 项目结构
@@ -110,10 +89,3 @@ zhiguang_be
 ├── db/schema.sql      # 数据库建表脚本
 └── docker-compose.yml # 中间件编排
 ```
-
----
-
-## 相关链接
-
-- **后端仓库**：https://github.com/weiyujun/zhiguang_be
-- **前端仓库**：https://github.com/G-Pegasus/zhiguang_fe
